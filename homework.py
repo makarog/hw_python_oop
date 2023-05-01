@@ -1,4 +1,3 @@
-from abc import abstractmethod
 from dataclasses import asdict, dataclass
 from typing import Dict, List, Type
 
@@ -62,7 +61,6 @@ class Training:
 
 class Running(Training):
     """Тренировка: бег."""
-    
     CALORIES_MEAN_SPEED_MULTIPLIER: int = 18
     CALORIES_MEAN_SPEED_SHIFT: float = 1.79
 
@@ -96,13 +94,13 @@ class SportsWalking(Training):
                  ) -> None:
         super().__init__(action, duration, weight)
         self.height = height
-        
+
     def get_spent_calories(self) -> float:
         spent_calories = ((self.CALORIES_WEIGHT_MULTIPLIER * self.weight
                            + ((self.get_mean_speed() * self.KPM_2_MPS) ** 2)
                            / (self.height / self.SM_2_M)
                            * (self.CALORIES_WEIGHT_MULTIPLIER_2 * self.weight))
-                           * (self.duration * self.MIN_IN_HOUR))
+                          * (self.duration * self.MIN_IN_HOUR))
         return spent_calories
 
 
@@ -132,6 +130,7 @@ class Swimming(Training):
     def get_spent_calories(self) -> float:
         return ((self.get_mean_speed() + self.COEFFICIENT_4)
                 * self.COEFFICIENT_5 * self.weight * self.duration)
+
 
 def read_package(workout_type: str, data: List[float]) -> Training:
     """Прочитать данные полученные от датчиков."""

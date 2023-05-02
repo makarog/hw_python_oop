@@ -1,5 +1,5 @@
 from dataclasses import asdict, dataclass
-from typing import Dict, List, Type
+
 
 
 @dataclass
@@ -31,7 +31,7 @@ class Training:
     def __init__(self,
                  action: int,
                  duration: float,
-                 weight: float,
+                 weight: float
                  ) -> None:
         self.action = action
         self.duration = duration
@@ -47,16 +47,17 @@ class Training:
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        NotImplementedError
+        pass
 
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
-        return InfoMessage(self.__class__.__name__,
-                           self.duration,
-                           self.get_distance(),
-                           self.get_mean_speed(),
-                           self.get_spent_calories()
-                           )
+        return InfoMessage(
+            self.__class__.__name__,
+            self.duration,
+            self.get_distance(),
+            self.get_mean_speed(),
+            self.get_spent_calories()
+        )
 
 
 class Running(Training):
@@ -64,12 +65,6 @@ class Running(Training):
     CALORIES_MEAN_SPEED_MULTIPLIER: int = 18
     CALORIES_MEAN_SPEED_SHIFT: float = 1.79
 
-    def __init__(self,
-                 action: int,
-                 duration: float,
-                 weight: float
-                 ) -> None:
-        super().__init__(action, duration, weight)
 
     def get_spent_calories(self) -> float:
         return ((self.CALORIES_MEAN_SPEED_MULTIPLIER
@@ -90,7 +85,7 @@ class SportsWalking(Training):
                  action: int,
                  duration: float,
                  weight: float,
-                 height: int
+                 height: float
                  ) -> None:
         super().__init__(action, duration, weight)
         self.height = height
@@ -106,11 +101,9 @@ class SportsWalking(Training):
 
 class Swimming(Training):
     """Тренировка: плавание."""
-    CALORIES_MEAN_SPEED_MULTIPLIER: int = 18
-    CALORIES_MEAN_SPEED_SHIFT: float = 1.79
     LEN_STEP: float = 1.38
-    COEFFICIENT_4: float = 1.1
-    COEFFICIENT_5: int = 2
+    COEFFICIENT_1: float = 1.1
+    COEFFICIENT_2: int = 2
 
     def __init__(self,
                  action: int,
@@ -128,18 +121,19 @@ class Swimming(Training):
                 / self.duration)
 
     def get_spent_calories(self) -> float:
-        return ((self.get_mean_speed() + self.COEFFICIENT_4)
-                * self.COEFFICIENT_5 * self.weight * self.duration)
+        return ((self.get_mean_speed() + self.COEFFICIENT_1)
+                * self.COEFFICIENT_2 * self.weight * self.duration)
 
 
-def read_package(workout_type: str, data: List[float]) -> Training:
+def read_package(workout_type: str, data: list[float]) -> Training:
     """Прочитать данные полученные от датчиков."""
-    types_workout: Dict[str, Type[Training]] = {'SWM': Swimming,
+    types_workout: dict[str, type[Training]] = {'SWM': Swimming,
                                                 'RUN': Running,
                                                 'WLK': SportsWalking
                                                 }
     if workout_type not in types_workout:
-        raise ValueError("Несуществующий код тренировки")
+        raise ValueError ("Несуществующий код тренировки:", workout_type, 
+                          "Введите один из доступных видов тренировки; SWM(Swimming), RUN(Running), WLK(SportsWalking)")
     return types_workout[workout_type](*data)
 
 

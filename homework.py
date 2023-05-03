@@ -1,7 +1,6 @@
 from dataclasses import asdict, dataclass
 
 
-
 @dataclass
 class InfoMessage:
     """Информационное сообщение о тренировке."""
@@ -11,11 +10,10 @@ class InfoMessage:
     speed: float
     calories: float
     MESSAGE = ('Тип тренировки: {training_type}; '
-                    'Длительность: {duration:.3f} ч.; '
-                    'Дистанция: {distance:.3f} км; '
-                    'Ср. скорость: {speed:.3f} км/ч; '
-                    'Потрачено ккал: {calories:.3f}.'
-                    )
+               'Длительность: {duration:.3f} ч.; '
+               'Дистанция: {distance:.3f} км; '
+               'Ср. скорость: {speed:.3f} км/ч; '
+               'Потрачено ккал: {calories:.3f}.')
 
     def get_message(self) -> str:
         """Выводим  информацию о тренировке."""
@@ -64,7 +62,6 @@ class Running(Training):
     """Тренировка: бег."""
     CALORIES_MEAN_SPEED_MULTIPLIER: int = 18
     CALORIES_MEAN_SPEED_SHIFT: float = 1.79
-
 
     def get_spent_calories(self) -> float:
         return ((self.CALORIES_MEAN_SPEED_MULTIPLIER
@@ -132,8 +129,9 @@ def read_package(workout_type: str, data: list[float]) -> Training:
                                                 'WLK': SportsWalking
                                                 }
     if workout_type not in types_workout:
-        raise ValueError ("Несуществующий код тренировки:", workout_type, 
-                          "Введите один из доступных видов тренировки; SWM(Swimming), RUN(Running), WLK(SportsWalking)")
+        raise ValueError("Несуществующий код тренировки:", workout_type,
+                         "Введите один из доступных видов тренировки:"
+                         "SWM(Swimming),RUN(Running), WLK(SportsWalking)")
     return types_workout[workout_type](*data)
 
 

@@ -45,7 +45,7 @@ class Training:
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        pass
+        raise NotImplementedError
 
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
@@ -73,10 +73,10 @@ class Running(Training):
 
 class SportsWalking(Training):
     """Тренировка: спортивная ходьба."""
-    CALORIES_WEIGHT_MULTIPLIER = 0.035
-    CALORIES_WEIGHT_MULTIPLIER_2 = 0.029
-    KPM_2_MPS = round(1000 / 3600, 3)
-    SM_2_M = 100
+    CALORIES_WEIGHT_MULTIPLIER: float = 0.035
+    CALORIES_WEIGHT_MULTIPLIER_2: float = 0.029
+    KPM_2_MPS: float = round(1000 / 3600, 3)
+    SM_2_M: int = 100
 
     def __init__(self,
                  action: int,
@@ -88,12 +88,11 @@ class SportsWalking(Training):
         self.height = height
 
     def get_spent_calories(self) -> float:
-        spent_calories = ((self.CALORIES_WEIGHT_MULTIPLIER * self.weight
-                           + ((self.get_mean_speed() * self.KPM_2_MPS) ** 2)
-                           / (self.height / self.SM_2_M)
-                           * (self.CALORIES_WEIGHT_MULTIPLIER_2 * self.weight))
-                          * (self.duration * self.MIN_IN_HOUR))
-        return spent_calories
+        return ((self.CALORIES_WEIGHT_MULTIPLIER * self.weight
+                 + ((self.get_mean_speed() * self.KPM_2_MPS) ** 2)
+                 / (self.height / self.SM_2_M)
+                 * (self.CALORIES_WEIGHT_MULTIPLIER_2 * self.weight))
+                * (self.duration * self.MIN_IN_HOUR))
 
 
 class Swimming(Training):
@@ -124,14 +123,15 @@ class Swimming(Training):
 
 def read_package(workout_type: str, data: list[float]) -> Training:
     """Прочитать данные полученные от датчиков."""
-    types_workout: dict[str, type[Training]] = {'SWM': Swimming,
-                                                'RUN': Running,
-                                                'WLK': SportsWalking
-                                                }
+    types_workout: dict[str, type[Training]] = {
+        'SWM': Swimming,
+        'RUN': Running,
+        'WLK': SportsWalking
+    }
     if workout_type not in types_workout:
-        raise ValueError("Несуществующий код тренировки:", workout_type,
-                         "Введите один из доступных видов тренировки:"
-                         "SWM(Swimming),RUN(Running), WLK(SportsWalking)")
+        raise ValueError(f"Несуществующий код тренировки: {workout_type}"
+                         f"Введите один из доступных видов тренировки:"
+                         f"{','.join(types_workout)}")
     return types_workout[workout_type](*data)
 
 
